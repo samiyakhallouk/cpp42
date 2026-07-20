@@ -1,8 +1,11 @@
 #include "easyfind.hpp"
-
 #include <vector>
+#include <list>
+#include <deque>
+
 int main()
 {
+    std::cout << "**********************VECTOR**********************\n";
     std::vector<int> v;
 
     v.push_back(1);
@@ -17,9 +20,39 @@ int main()
     {
         std::cerr << e.what() << '\n';
     }
-    
-    for (size_t i = 0; i < v.size(); i++)
+
+    std::cout << "**********************LIST************************\n";
+
+    std::list<int> l;
+    l.push_back(11);
+    l.push_back(5);
+    l.push_back(3);
+    l.push_back(74);
+
+    try
     {
-        std::cout << v[i] << std::endl;
+        easyfind(l, 5);
     }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::cout << "**********************DEQUE***********************\n";
+
+    std::deque<int> d;
+    l.push_back(8);
+    l.push_back(1);
+    l.push_back(12);
+    l.push_back(-3);
+
+    try
+    {
+        easyfind(d, 5);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
 }
