@@ -2,17 +2,33 @@
 
 int main()
 {
-    std::list<int> l(5);
+    MutantStack<int> mystack;
 
-    l.push_front(3);
-    l.push_front(2);
-    l.push_front(1);
-    std::list<int>::iterator it = l.begin();
-    *it = 11;
+    mystack.push(3);
+    mystack.push(2);
+    mystack.push(1);
+    mystack.push(53);
+    mystack.push(4);
+    mystack.push(7);
+    
+    // std::cout << mystack.top() << std::endl;
+    MutantStack<int>::iterator it = mystack.begin();
+    it++;
 
-    for (; it != l.end(); it++)
+    mystack.pop();
+    for (; it != mystack.end(); it++)
     {
         std::cout << *it << std::endl;
     }
-    return (0);
+
+    std::cout << "---------------------------------\n";
+
+    MutantStack<int> ss(mystack);
+
+    ss.top() = 40;
+    it = ss.begin();
+    for (; it != ss.end(); it++)
+    {
+        std::cout << *it << std::endl;
+    }
 }
