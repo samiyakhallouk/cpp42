@@ -15,13 +15,13 @@ int main()
         // std::cout << sp.longestSpan() << std::endl;
 
         std::vector<int> v;
-        for (size_t i = 0; i < 20; i++)
+        for (size_t i = 0; i < 10000; i++)
         {
             v.push_back(i);
-            std::cout << v[i] << std::endl;
         }
         std::cout << "---------------------------" << std::endl;
-        Span s(20);
+        Span s(10001);
+        s.addNumber(3);
         s.addrange(v.begin(), v.end());
     
         std::cout << s.shortestSpan() << std::endl;
