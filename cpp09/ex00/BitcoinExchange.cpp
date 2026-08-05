@@ -62,10 +62,6 @@ int BitcoinExchange::parse_date(std::string& date)
         std::cout << "Error: bad input => " << date << std::endl;
         return 1;
     }
-    
-    std::cout << year << " ";
-    std::cout <<month << " ";
-    std::cout << day<< std::endl;
 
     std::stringstream yr(year), mt(month), dy(day);
     int y,m,d;
