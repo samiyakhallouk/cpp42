@@ -41,7 +41,7 @@ void RPN::parse_line(std::string line)
     }
     if (s.size() != 1)
         throw std::runtime_error("Error");
-    std::cout << "> Result: " << rsl << std::endl;
+    std::cout << "> Result: " << s.top() << std::endl;
 }
 
 float RPN::calcul(float first, float sec, char c)

@@ -12,7 +12,7 @@
 class BitcoinExchange
 {
     private:
-        std::map<std::string, float> m;
+        std::map<std::string, double> m;
         std::string file;
     public:
         BitcoinExchange();
@@ -20,7 +20,7 @@ class BitcoinExchange
         BitcoinExchange& operator=(const BitcoinExchange&);
         ~BitcoinExchange();
 
-        void shearch_on();
+        void shearch_on(char *);
         void fill_map();
         int parse_line(std::string&);
         int parse_date(std::string&);

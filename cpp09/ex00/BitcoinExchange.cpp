@@ -20,26 +20,26 @@ int BitcoinExchange::parse_val(std::string& value)
 {
     if (value[0] != ' ')
     {
-        std::cout << "Error: bad input => " << value << std::endl;
+        std::cerr << "Error: bad input => " << value << std::endl;
         return 1;
     }
     value = value.substr(1);
     std::stringstream ss(value);
-    float v;
+    double v;
     if (!(ss >> v) || !(ss.eof()))
     {
-        std::cout << "Error: bad input => " << value << std::endl;
+        std::cerr << "Error: bad input => " << value << std::endl;
         return 1;
     }
     if (value[0] == '-')
     {
-        std::cout << "Error: not a positive number."<< std::endl;
+        std::cerr << "Error: not a positive number."<< std::endl;
         return 1;
     }
     
-    if (v < 0 || v > 1000 || value.size() > 4)
+    if (v < 0 || v > 1000)
     {
-        std::cout << "Error: too large a number." << std::endl;
+        std::cerr << "Error: too large a number." << v <<std::endl;
         return 1;
     }
     
@@ -50,7 +50,7 @@ int BitcoinExchange::parse_date(std::string& date)
 {
     if (date[date.size() - 1] != ' ')
     {
-        std::cout << "Error: bad input => " << date << std::endl;
+        std::cerr << "Error: bad input => " << date << std::endl;
         return 1;
     }
     date = date.substr(0, date.size() - 1);
@@ -59,7 +59,7 @@ int BitcoinExchange::parse_date(std::string& date)
     
     if (!(std::getline(ss, year, '-') && std::getline(ss, month, '-') && std::getline(ss, day)))
     {
-        std::cout << "Error: bad input => " << date << std::endl;
+        std::cerr << "Error: bad input => " << date << std::endl;
         return 1;
     }
 
@@ -68,23 +68,23 @@ int BitcoinExchange::parse_date(std::string& date)
     
     if (!(yr >> y) || !yr.eof() || !(mt >> m) || !mt.eof() || !(dy >> d) || !dy.eof())
     {
-        std::cout << "Error: bad input => " << date << std::endl;
+        std::cerr << "Error: bad input => " << date << std::endl;
         return 1;
     }
     
     if (y < 2009 || y > 2022 || year.size() != 4)
     {
-        std::cout << "Error: bad input => " << date << std::endl;
+        std::cerr << "Error: bad input => " << date << std::endl;
         return 1;
     }
     if (m < 1 || m > 12 || month.size() != 2)
     {
-        std::cout << "Error: bad input => " << date << std::endl;
+        std::cerr << "Error: bad input => " << date << std::endl;
         return 1;
     }
     if (d < 1 || d > 31 || day.size() != 2)
     {
-        std::cout << "Error: bad input => " << date << std::endl;
+        std::cerr << "Error: bad input => " << date << std::endl;
         return 1;
     }
     return 0;
@@ -102,17 +102,17 @@ int BitcoinExchange::parse_line(std::string& line)
             return 1;
         if (parse_val(value))
             return 1;
-        std::map<std::string, float>::iterator it = m.find(date);
+        std::map<std::string, double>::iterator it = m.find(date);
         if (it != m.end())
             return 0;
         std::stringstream v(value);
-        float value;
+        double value;
         v >> value;
         it = m.lower_bound(date);
         std::cout << date << " => " << value << " = " << (it->second) * value << std::endl;
         return 0;
     }
-    std::cout << "Error: bad input => " << line << std::endl;
+    std::cerr << "Error: bad input => " << line << std::endl;
     return 1;
 }
 
@@ -123,7 +123,10 @@ void BitcoinExchange::fill_map()
         throw std::runtime_error("Error : couldn´t open file!");
     
     std::string line, date;
-    float val;
+    double val;
+    std::getline(data_file, line);
+    if (line != "date,exchange_rate")
+        throw std::runtime_error("Error!");
     while (std::getline(data_file, line))
     {
         size_t pos = 0;
@@ -138,14 +141,17 @@ void BitcoinExchange::fill_map()
     }
 }
 
-void BitcoinExchange::shearch_on()
+void BitcoinExchange::shearch_on(char *file)
 {
     fill_map();
-    std::ifstream input("input.txt");
+    std::ifstream input(file);
     if (!input.is_open())
         throw std::runtime_error("Error : couldn´t open file!");
     std::string line;
     std::getline(input, line);
+    if (line != "date | value")
+        throw std::runtime_error("Error!");
+    
     while (std::getline(input, line))
     {
         if (parse_line(line))
