@@ -39,7 +39,7 @@ int BitcoinExchange::parse_val(std::string& value)
     
     if (v < 0 || v > 1000)
     {
-        std::cerr << "Error: too large a number." << v <<std::endl;
+        std::cerr << "Error: too large a number." <<std::endl;
         return 1;
     }
     
@@ -97,18 +97,21 @@ int BitcoinExchange::parse_line(std::string& line)
 
     if (std::getline(ss, date, '|') && std::getline(ss, value))
     {
-        // std::cout << value<< std::endl;
         if (parse_date(date))
             return 1;
         if (parse_val(value))
             return 1;
-        std::map<std::string, double>::iterator it = m.find(date);
-        if (it != m.end())
-            return 0;
+        std::map<std::string, double>::iterator it = m.lower_bound(date);
         std::stringstream v(value);
         double value;
         v >> value;
-        it = m.lower_bound(date);
+        if (it == m.end())
+        {
+            std::cout << "lower_bound returned END"<< std::endl;
+            it--;
+            std::cout << "Selected: " << it->first << " => " << it->second << std::endl;
+            return 0;
+        }
         std::cout << date << " => " << value << " = " << (it->second) * value << std::endl;
         return 0;
     }
@@ -123,21 +126,20 @@ void BitcoinExchange::fill_map()
         throw std::runtime_error("Error : couldn´t open file!");
     
     std::string line, date;
-    double val;
+
     std::getline(data_file, line);
-    if (line != "date,exchange_rate")
-        throw std::runtime_error("Error!");
     while (std::getline(data_file, line))
     {
-        size_t pos = 0;
-        if ((pos = line.find(',')) != std::string::npos)
-        {
-            date = line.substr(0, pos);
-            std::stringstream ss(line.substr(pos + 1));
-            ss >> val;
-        }
+        size_t pos = line.find(',');
+        if (pos == std::string::npos)
+            throw std::runtime_error("Error!");
+
+        date = line.substr(0, pos);
+        std::stringstream ss(line.substr(pos + 1));
+        double val;
+        ss >> val;
+        
         m[date] = val;
-        // std::cout << m[date] << std::endl;
     }
 }
 
