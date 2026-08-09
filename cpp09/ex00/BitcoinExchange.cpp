@@ -106,12 +106,17 @@ int BitcoinExchange::parse_line(std::string& line)
         double value;
         v >> value;
         if (it == m.end())
+            --it;
+        else if (it->first != date)
         {
-            std::cout << "lower_bound returned END"<< std::endl;
-            it--;
-            std::cout << "Selected: " << it->first << " => " << it->second << std::endl;
-            return 0;
+            if (it == m.begin())
+            {
+                std::cerr << "Error: bad input => " << date << std::endl;
+                return (1);
+            }
+            --it;
         }
+        
         std::cout << date << " => " << value << " = " << (it->second) * value << std::endl;
         return 0;
     }
